@@ -17,7 +17,7 @@ It simulates an Hyper-V bare-metal server using an Azure VM that hosts an Hyper-
     - [Windows - Server Server 2019](#windows---server-server-2019)
 - [Azure Migrate](#azure-migrate)
   - [Azure Migrate - Discovery and assessment](#azure-migrate---discovery-and-assessment)
-  - [Azure Migrate: Server Migration](#azure-migrate-server-migration)
+  - [Azure Migrate - Server Migration](#azure-migrate---server-migration)
 - [Azure Migrate - Design at scale considerations](#azure-migrate---design-at-scale-considerations)
   - [Hyper-V](#hyper-v)
   - [VMware](#vmware)
@@ -341,7 +341,7 @@ To view assessment result, click here:
 ![Assessment](docs/assessment05.png)
 Let's now play with the migration tools!
 
-## Azure Migrate: Server Migration
+## Azure Migrate - Server Migration
 
 ![Discover](docs/discover01.png)
 
