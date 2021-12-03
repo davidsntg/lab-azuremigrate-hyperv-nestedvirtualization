@@ -5,6 +5,7 @@ This repo is a lab to simulate **Hyper-V VMs migration to Azure** using [Azure M
 It simulates an Hyper-V bare-metal server using an Azure VM that hosts an Hyper-V Manager on which we create VMs. This is called nested virtualization.
 
 Big Picture:
+
 ![Big Picture](docs/bigpicture.png)
 
 TODO: Add all network flow matrix
