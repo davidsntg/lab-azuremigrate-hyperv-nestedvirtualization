@@ -4,11 +4,9 @@ This repo is a lab to simulate **Hyper-V VMs migration to Azure** using [Azure M
 
 It simulates an Hyper-V bare-metal server using an Azure VM that hosts an Hyper-V Manager on which we create VMs. This is called nested virtualization.
 
-Big Picture:
+**Big Picture**:
 
 ![Big Picture](docs/bigpicture.png)
-
-TODO: Add all network flow matrix
 
 - [Azure Lab - Migrate Hyper-V VMs to Azure with Azure Migrate & Nested Virtualization](#azure-lab---migrate-hyper-v-vms-to-azure-with-azure-migrate--nested-virtualization)
   - [Infrastructure deployment](#infrastructure-deployment)
@@ -20,6 +18,9 @@ TODO: Add all network flow matrix
 - [Azure Migrate](#azure-migrate)
   - [Azure Migrate - Discovery and assessment](#azure-migrate---discovery-and-assessment)
   - [Azure Migrate: Server Migration](#azure-migrate-server-migration)
+- [Azure Migrate - Design at scale considerations](#azure-migrate---design-at-scale-considerations)
+  - [Hyper-V](#hyper-v)
+  - [VMware](#vmware)
 - [Sources](#sources)
 
 ## Infrastructure deployment
@@ -108,8 +109,6 @@ Turn off Windows Defender Firewall
 ```powershell
 Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled False 
 ```
-
-TODO: explain mount E:\ data disk here
 
 ## Hyper-V Guest VM Creation
 
@@ -253,8 +252,6 @@ Azure Migrate is splitted in two tools:
 * Azure Migrate: Discovery and assessment
 * Azure Migrate: Server Migration
 
-TODO: add the overall process and details here
-
 ## Azure Migrate - Discovery and assessment
 
 To discover "on-premises servers", it is required to deploy an appliance:
@@ -303,7 +300,7 @@ Continue with [Azure Device Login](https://www.microsoft.com/devicelogin):
 ![Azure Migrate Appliance](docs/azuremigrateappliance08.png)
 
 On Hyper-V host VM: 
-* Create an *azuremigrateuser* account, member of bellow groups:
+* Create an *azuremigrateuser* account, member of following groups:
   * Administrators
   * Hyper-V Administrators
   * Performance Monitor Users
@@ -429,9 +426,55 @@ Observe result in target resource group:
 
 Check Azure VMs are running, connect to them and check appliancations are Running.
 
+# Azure Migrate - Design at scale considerations
+
+## Hyper-V
+
+Recommendations:
+* Number of appliance:
+  * Based on [appliance limits](https://docs.microsoft.com/en-us/azure/migrate/migrate-appliance#appliance---hyper-v), company network policies and geography. 
+    
+    Limit: 5,000 servers running on a Hyper-V environment max
+    
+    Limit: 300 Hyper-V hosts maximum.  
+  * Deploy the appliance as close as possible to Hyper-V hosts to minimize latency. 
+
+* [Network flows](https://docs.microsoft.com/en-us/azure/migrate/migrate-appliance-architecture#discovery-and-collection-process): 
+  * `Hyper-V appliance => Hyper-V hosts` WinRM port 5985 (HTTP)
+  * `Hyper-V appliance => Azure Migrate` TCP port 443 (HTTPS). 
+  
+  If Hyper-V appliance has no direct Internet connectivity and a proxy is used, allow these [URLs](https://docs.microsoft.com/en-us/azure/migrate/migrate-appliance#url-access)
+* Number of Azure Site Recovery Provider:
+  * 1 per Hyper-V host 
+* Replication limit: replicate up to 10 machines together. If you need to replicate more, then replicate them simultaneously in [batches of 10](https://docs.microsoft.com/en-us/azure/migrate/tutorial-migrate-hyper-v?tabs=UI#replicate-hyper-v-vms).
+
+* [Post-migration best practices](https://docs.microsoft.com/en-us/azure/migrate/tutorial-migrate-hyper-v?tabs=UI#post-migration-best-practices)
+
+## VMware
+
+Recommendations:
+* Number of appliance:
+  * Based on [appliance limits](https://docs.microsoft.com/en-us/azure/migrate/migrate-appliance#appliance---vmware), company network policies and geography. 
+    
+    Limit: 10,000 servers running on a vCenter Server
+    
+    Limit: An appliance can connect to a **single vCenter Server**. 
+  * Deploy the appliance as close as possible to Hyper-V hosts to minimize latency. 
+
+* [Network flows](https://docs.microsoft.com/en-us/azure/migrate/migrate-appliance-architecture#discovery-and-collection-process): 
+  * `VMware appliance => vCenter server` TCP port 443 (HTTPS)
+  * `VMware appliance => Azure Migrate` TCP port 443 (HTTPS). 
+  
+  If VMware appliance has no direct Internet connectivity and a proxy is used, allow these [URLs](https://docs.microsoft.com/en-us/azure/migrate/migrate-appliance#url-access)
+* [Agentless vs Agent-base Vmware migration option](https://docs.microsoft.com/en-us/azure/migrate/server-migrate-overview#compare-migration-methods)
+  * Using Agentless migration option, a maximum of 500 VMs can be simultaneously replicated from a vCenter Server. In the portal, you can select up to 10 machines at once for replication. To replicate more machines, add in batches of 10.
+
+* [Post-migration best practices](https://docs.microsoft.com/en-us/azure/migrate/tutorial-migrate-vmware#post-migration-best-practices)
+
 
 # Sources
 
+Following links were used to create this lab:
 * https://www.cyberciti.biz/faq/howto-setting-rhel7-centos-7-static-ip-configuration/
 * https://www.piesik.me/2019/02/04/Azure-Nested-Virtualization-Internet-Connection/#
 * https://www.nakivo.com/blog/hyper-v-nested-virtualization-on-azure-complete-guide/
