@@ -10,6 +10,18 @@ Big Picture:
 
 TODO: Add all network flow matrix
 
+- [Azure Lab - Migrate Hyper-V VMs to Azure with Azure Migrate & Nested Virtualization](#azure-lab---migrate-hyper-v-vms-to-azure-with-azure-migrate--nested-virtualization)
+  - [Infrastructure deployment](#infrastructure-deployment)
+  - [Hyper-V Host installation & configuration](#hyper-v-host-installation--configuration)
+  - [Hyper-V Guest VM Creation](#hyper-v-guest-vm-creation)
+    - [Linux - Ubuntu](#linux---ubuntu)
+    - [Linux - CentOS 7.9](#linux---centos-79)
+    - [Windows - Server Server 2019](#windows---server-server-2019)
+- [Azure Migrate](#azure-migrate)
+  - [Azure Migrate - Discovery and assessment](#azure-migrate---discovery-and-assessment)
+  - [Azure Migrate: Server Migration](#azure-migrate-server-migration)
+- [Sources](#sources)
+
 ## Infrastructure deployment
 
 ```bash
