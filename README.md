@@ -110,7 +110,7 @@ Turn off Windows Defender Firewall
 Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled False 
 ```
 
-*Optional* - Initialize *E:* disk to storeHyper-V VMs:
+*Optional* - Initialize *E:* disk to store Hyper-V VMs:
 ```powershell
 $Disk = Get-Disk -Number 1 | Where-Object -FilterScript { $_.PartitionStyle -Eq "RAW" } | Initialize-Disk -PassThru | New-Volume -FileSystem NTFS -DriveLetter E -FriendlyName 'Hyper-V'   
 $HyperVPath = "$($Disk.DriveLetter):\Hyper-V"
