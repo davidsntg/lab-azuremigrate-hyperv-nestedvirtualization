@@ -110,6 +110,14 @@ Turn off Windows Defender Firewall
 Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled False 
 ```
 
+*Optional* - Initialize *E:* disk to storeHyper-V VMs:
+```powershell
+$Disk = Get-Disk -Number 1 | Where-Object -FilterScript { $_.PartitionStyle -Eq "RAW" } | Initialize-Disk -PassThru | New-Volume -FileSystem NTFS -DriveLetter E -FriendlyName 'Hyper-V'   
+$HyperVPath = "$($Disk.DriveLetter):\Hyper-V"
+$null = New-Item -Path $HyperVPath -ItemType Directory -Force
+Set-VMHost -VirtualHardDiskPath $HyperVPath -VirtualMachinePath $HyperVPath
+```
+
 ## Hyper-V Guest VM Creation
 
 ### Linux - Ubuntu
@@ -121,10 +129,10 @@ Example:
 $locationFolder="E:\Hyper-V\"
 
 # Download Ubuntu 18.04
-Invoke-WebRequest -Uri "https://releases.ubuntu.mirror.malte-bittner.eu/18.04.6/ubuntu-18.04.6-live-server-amd64.iso" -OutFile "$($locationFolder)ubuntu-18.04.6-live-server-amd64.iso"
+Invoke-WebRequest -Uri "https://releases.ubuntu.com/18.04.6/ubuntu-18.04.6-live-server-amd64.iso" -OutFile "$($locationFolder)ubuntu-18.04.6-live-server-amd64.iso"
 
 # Download Ubuntu 20.04 LTS
-Invoke-WebRequest -Uri "https://mirrors.ircam.fr/pub/ubuntu/releases/20.04.3/ubuntu-20.04.3-live-server-amd64.iso" -OutFile "$($locationFolder)ubuntu-20.04.3-live-server-amd64.iso"
+Invoke-WebRequest -Uri "https://releases.ubuntu.com/20.04/ubuntu-20.04.4-live-server-amd64.iso" -OutFile "$($locationFolder)ubuntu-20.04.3-live-server-amd64.iso"
 
 # Download Ubuntu 21.10
 Invoke-WebRequest -Uri "https://www-ftp.lip6.fr/pub/linux/distributions/Ubuntu/releases/21.10/ubuntu-21.10-live-server-amd64.iso" -OutFile "$($locationFolder)ubuntu-21.10-live-server-amd64.iso"
